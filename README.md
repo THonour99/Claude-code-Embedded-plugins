@@ -33,7 +33,7 @@ Claude Code 插件是通过自定义斜杠命令、专用代理、钩子和 MCP 
 ### 方式一：全局安装
 
 ```bash
-/plugin marketplace add https://github.com/ChamHerry/claude-code-third-party-plugins
+/plugin marketplace add https://github.com/THonour99/Claude-code-Embedded-plugins
 
 ```
 
@@ -79,4 +79,5 @@ plugin-name/
 ---
 
 作者: Tangshikai | <TKai.study@gmail.com>
+
 
