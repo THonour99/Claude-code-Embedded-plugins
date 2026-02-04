@@ -1,0 +1,31 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "embedded-dev-plugins",
+  "version": "1.2.0",
+  "description": "嵌入式开发专用 Claude Code 插件集合，支持 STM32/FreeRTOS/裸机项目",
+  "owner": {
+    "name": "Tangshikai",
+    "email": "TKai.study@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "project-init",
+      "description": "智能分析嵌入式项目并生成 CLAUDE.md 规范文件，支持 Keil MDK/IAR/CMake，自动检测 MCU/RTOS/分层架构",
+      "version": "1.2.0",
+      "author": {
+        "name": "Tangshikai",
+        "email": "TKai.study@gmail.com"
+      },
+      "source": "./plugins/project-init",
+      "category": "embedded",
+      "keywords": [
+        "STM32",
+        "FreeRTOS",
+        "embedded",
+        "ARM Cortex-M",
+        "Keil MDK",
+        "IAR"
+      ]
+    }
+  ]
+}

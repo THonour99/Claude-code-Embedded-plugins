@@ -1,0 +1,18 @@
+{
+  "name": "project-init",
+  "description": "智能分析嵌入式项目并生成 CLAUDE.md 规范文件（STM32/FreeRTOS/裸机）",
+  "version": "1.2.0",
+  "author": {
+    "name": "Tangshikai",
+    "email": "TKai.study@gmail.com"
+  },
+  "keywords": [
+    "embedded",
+    "STM32",
+    "FreeRTOS",
+    "ARM Cortex-M",
+    "嵌入式",
+    "飞控",
+    "project-init"
+  ]
+}
