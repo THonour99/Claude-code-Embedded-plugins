@@ -33,30 +33,10 @@ Claude Code 插件是通过自定义斜杠命令、专用代理、钩子和 MCP 
 ### 方式一：全局安装
 
 ```bash
-# 复制所有插件到 Claude Code 全局目录
-cp -r plugins/* ~/.claude/plugins/
+/plugin marketplace add https://github.com/ChamHerry/claude-code-third-party-plugins
+
 ```
 
-### 方式二：单个插件安装
-
-```bash
-# 仅安装特定插件
-cp -r plugins/project-init ~/.claude/plugins/
-```
-
-### 方式三：项目级配置
-
-在项目的 `.claude/settings.json` 中配置插件路径：
-
-```json
-{
-  "plugins": {
-    "directories": [
-      "./plugins"
-    ]
-  }
-}
-```
 
 ## 使用插件
 
@@ -99,3 +79,4 @@ plugin-name/
 ---
 
 作者: Tangshikai | <TKai.study@gmail.com>
+
