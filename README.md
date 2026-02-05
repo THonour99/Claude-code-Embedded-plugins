@@ -1,46 +1,53 @@
-# Claude Code 插件市场
+# Claude Code 嵌入式开发插件集
 
 <div align="center">
 
-**扩展 Claude Code 功能的社区插件集合**
+**专为 STM32/FreeRTOS/裸机 嵌入式开发打造的 Claude Code 插件**
 
 [![Plugins](https://img.shields.io/badge/plugins-1-blue.svg)](./plugins)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-compatible-purple.svg)](https://claude.ai/code)
+[![Embedded](https://img.shields.io/badge/Embedded-STM32%20%7C%20FreeRTOS-orange.svg)](./plugins/project-init)
 
-[插件列表](#插件列表) • [安装方法](#安装方法) • [开发指南](#开发插件) • [贡献](#贡献)
+[插件列表](#-插件列表) • [安装方法](#-安装方法) • [开发指南](#️-开发插件) • [贡献](#-贡献)
 
 </div>
 
 ---
 
-## 📦 什么是 Claude Code 插件？
+## 📦 项目简介
 
-Claude Code 插件是通过自定义斜杠命令（Slash Commands）、专用代理（Agents）、钩子（Hooks）和 MCP 服务器来扩展 Claude Code 功能的模块。插件可以在项目和团队之间共享，提供一致的工具和工作流程。
+嵌入式开发专用 Claude Code 插件集合，通过智能分析项目结构和配置文件，自动推断芯片型号、RTOS、外设配置等信息，帮助嵌入式开发者快速建立规范化的开发流程。
 
-### 插件能做什么？
+### 核心特性
 
-- ✅ **自动化工作流**：简化重复性任务
-- ✅ **代码生成**：快速生成标准化代码和配置
-- ✅ **质量保证**：自动化代码审查和测试
-- ✅ **项目管理**：辅助项目初始化和规范管理
-- ✅ **Git 集成**：优化版本控制流程
+- ✅ **智能分析**：自动检测 MCU 型号、RTOS、IDE 配置
+- ✅ **多平台支持**：Keil MDK / IAR / CMake + GCC / STM32CubeMX
+- ✅ **分层架构**：Service → Driver → Device → BSP → Arch
+- ✅ **嵌入式规范**：中断安全、内存管理、代码风格规范
+- ✅ **跨平台**：Windows / macOS / Linux 完全兼容
 
 ## 🎯 插件列表
 
-### [project-init](./plugins/project-init/)
+### [project-init](./plugins/project-init/)（嵌入式版）
 
-**项目规范初始化插件**
+**嵌入式项目规范初始化插件**
 
-基于 CLAUDE_TEMPLATE.md 模板，通过交互式问答快速生成定制化的项目开发规范文件。
+智能分析嵌入式项目结构和配置文件，自动推断芯片型号、RTOS、外设配置等信息，生成定制化的 CLAUDE.md 开发规范文件。
 
-- **命令**: `/project-init` - 交互式初始化项目 CLAUDE.md 规范
+- **命令**: `/project-init` - 智能分析并初始化项目 CLAUDE.md 规范
+- **支持的 IDE**:
+  - Keil MDK（`*.uvprojx`, `*.uvproj`）
+  - IAR（`*.ewp`, `*.eww`）
+  - CMake + GCC（`CMakeLists.txt`）
+  - STM32CubeMX（`*.ioc`）
+- **支持的 RTOS**: FreeRTOS、RT-Thread、裸机系统
 - **特性**:
-  - 9轮渐进式问答收集项目信息
-  - 支持多种技术栈（Go/Python/TypeScript/Java）
+  - 自动检测 MCU 型号、编译器版本、外设配置
+  - 检测分层架构（Service/Driver/Device/BSP）
+  - 只对无法推断的信息询问用户
   - 自动备份现有配置
-  - 智能占位符替换
-- **适用场景**: 新项目启动、团队规范标准化、开发流程规范化
+- **适用场景**: STM32 项目初始化、嵌入式团队规范标准化、飞控/工控等复杂项目
 
 ## 📥 安装方法
 
@@ -50,7 +57,7 @@ Claude Code 插件是通过自定义斜杠命令（Slash Commands）、专用代
 
 ```bash
 # 1. 添加插件市场
-/plugin marketplace add https://github.com/ChamHerry/claude-code-third-party-plugins
+/plugin marketplace add https://github.com/THonour99/Claude-code-Embedded-plugins
 
 # 2. 打开插件管理界面
 /plugin
@@ -64,10 +71,10 @@ Claude Code 插件是通过自定义斜杠命令（Slash Commands）、专用代
 
 ```bash
 # 1. 添加插件市场
-/plugin marketplace add https://github.com/ChamHerry/claude-code-third-party-plugins
+/plugin marketplace add https://github.com/THonour99/Claude-code-Embedded-plugins
 
 # 2. 直接安装插件（需要指定市场名称）
-/plugin install project-init@claude-code-third-party-plugins
+/plugin install project-init@embedded-dev-plugins
 ```
 
 > **注意**：使用命令行安装时，必须指定 `@marketplace-name` 来明确插件来源。
@@ -101,13 +108,13 @@ claude
 # 然后选择 "Manage Plugins"
 
 # 卸载插件
-/plugin uninstall project-init@claude-code-third-party-plugins
+/plugin uninstall project-init@embedded-dev-plugins
 
 # 禁用插件（不删除）
-/plugin disable project-init@claude-code-third-party-plugins
+/plugin disable project-init@embedded-dev-plugins
 
 # 启用已禁用的插件
-/plugin enable project-init@claude-code-third-party-plugins
+/plugin enable project-init@embedded-dev-plugins
 
 # 查看所有可用命令（包括插件命令）
 /help
@@ -199,10 +206,10 @@ description: 命令描述
 
 ### 最佳实践
 
-- **遵循 KISS 原则**：保持插件简洁明了
-- **提供详细文档**：让用户快速上手
-- **异常处理完善**：优雅处理边界情况
-- **用户体验优先**：提供清晰的交互和反馈
+- **遵循分层架构**：Service → Driver → Device → BSP
+- **中断安全优先**：ISR 编写规则、临界区保护
+- **内存管理规范**：DTCM/AXI_SRAM/DMA 缓冲区使用规则
+- **数据优先原则**：优先使用项目实际数据，避免猜测
 - **版本语义化**：使用 semver 管理版本
 
 ## 🤝 贡献
@@ -234,50 +241,49 @@ description: 命令描述
 
 ### 贡献指南
 
-- ✅ 插件应解决实际问题
-- ✅ 代码质量和文档完善
-- ✅ 遵循现有插件的风格
-- ✅ 提供充分的测试和示例
+- ✅ 插件应解决嵌入式开发的实际问题
+- ✅ 支持常见的嵌入式开发工具链
+- ✅ 遵循现有插件的风格和分层架构
+- ✅ 提供充分的测试和使用示例
 - ❌ 避免重复造轮子
-- ❌ 不引入不必要的依赖
+- ❌ 不引入不必要的外部依赖
 
 ## 📋 插件清单
 
 | 插件名称 | 版本 | 描述 | 作者 |
 |---------|------|------|------|
-| [project-init](./plugins/project-init/) | v1.0.0 | 项目规范初始化 | Wang Xuecheng |
+| [project-init](./plugins/project-init/) | v1.2.0 | 嵌入式项目规范初始化（STM32/FreeRTOS/裸机） | Tangshikai |
 
-_更多插件持续添加中..._
+_更多嵌入式开发插件持续开发中..._
 
 ## 🎨 插件分类
 
-### 🚀 项目管理
-- [project-init](./plugins/project-init/) - 项目规范初始化
+### 🚀 项目初始化
+- [project-init](./plugins/project-init/) - 嵌入式项目规范初始化
 
-### 🔧 开发工具
-_即将推出..._
+### 🔧 嵌入式工具
+_开发中..._
+
+### 🐛 调试辅助
+_开发中..._
+
+### ⚡ 性能分析
+_开发中..._
 
 ### 📝 代码生成
-_即将推出..._
+_开发中..._
 
-### ✅ 质量保证
-_即将推出..._
+## 💡 插件规划
 
-### 🔄 Git 工作流
-_即将推出..._
+以下是计划开发的嵌入式专用插件：
 
-## 💡 插件想法
+- **embedded-debug-assistant**：HardFault/崩溃/栈溢出调试助手
+- **embedded-perf-analyzer**：DMA优化/驱动性能/CPU占用分析
+- **hal-check**：HAL库使用检查工具
+- **rtos-analyze**：FreeRTOS/RT-Thread 任务分析
+- **memory-map**：内存布局可视化分析
 
-欢迎提出新插件想法！以下是一些潜在方向：
-
-- **测试生成器**：自动生成单元测试
-- **文档生成器**：从代码生成 API 文档
-- **代码审查助手**：自动化 PR 审查
-- **数据库迁移**：数据库变更管理
-- **性能分析**：代码性能优化建议
-- **依赖更新**：自动更新依赖版本
-
-[提交想法 Issue →](https://github.com/ChamHerry/claude-code-third-party-plugins/issues/new)
+[提交想法 Issue →](https://github.com/THonour99/Claude-code-Embedded-plugins/issues/new)
 
 ## 📜 许可证
 
@@ -292,16 +298,16 @@ _即将推出..._
 
 ## 📞 联系我们
 
-- **Issues**: [提交问题](https://github.com/ChamHerry/claude-code-third-party-plugins/issues)
-- **Discussions**: [参与讨论](https://github.com/ChamHerry/claude-code-third-party-plugins/discussions)
-- **Email**: ahut17353766123@gmail.com
+- **Issues**: [提交问题](https://github.com/THonour99/Claude-code-Embedded-plugins/issues)
+- **Discussions**: [参与讨论](https://github.com/THonour99/Claude-code-Embedded-plugins/discussions)
+- **Email**: TKai.study@gmail.com
 
 ---
 
 <div align="center">
 
-**🌟 如果这个项目对你有帮助，请给我们一个 Star！**
+**如果这个项目对你的嵌入式开发有帮助，请给我们一个 Star！**
 
-Made with ❤️ by Claude Code Community
+Made with dedication by Tangshikai
 
 </div>
