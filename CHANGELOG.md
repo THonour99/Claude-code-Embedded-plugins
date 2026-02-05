@@ -8,10 +8,35 @@
 ## [未发布]
 
 ### 计划中
-- 添加更多社区插件
-- 插件自动更新机制
-- 插件依赖管理
-- 插件测试框架
+- embedded-debug-assistant：HardFault/崩溃/栈溢出调试助手
+- embedded-perf-analyzer：DMA优化/驱动性能/CPU占用分析
+- hal-check：HAL库使用检查工具
+- rtos-analyze：FreeRTOS/RT-Thread 任务分析
+- memory-map：内存布局可视化分析
+
+## [1.2.0] - 2025-02
+
+### 新增
+- 🔧 **project-init 嵌入式专用版本**
+  - 针对 STM32/FreeRTOS/裸机场景优化
+  - 支持 Keil MDK（*.uvprojx）项目检测，提取 MCU 型号、编译宏
+  - 支持 IAR（*.ewp）项目检测
+  - 支持 CMake + GCC 项目检测
+  - 支持 STM32CubeMX（*.ioc）配置检测
+  - 新增 RTOS 自动检测（FreeRTOS/RT-Thread/裸机）
+  - 新增分层架构检测（Service/Driver/Device/BSP）
+  - 新增层职责边界规范
+  - 新增中断安全、内存管理规范
+  - 新增完整数据使用链追踪要求
+  - 集成嵌入式调试/性能分析 Skills 映射
+
+### 变更
+- 项目定位从通用插件市场调整为嵌入式开发专用插件集
+- marketplace 名称更新为 embedded-dev-plugins
+
+### 移除
+- 移除 Monorepo 支持（v1.1.0 功能）
+- 移除通用技术栈模板（Go/Python/TypeScript/Java）
 
 ## [1.0.0] - 2025-11-03
 
@@ -20,24 +45,17 @@
 - ✨ **project-init** 插件
   - 交互式项目规范初始化
   - 基于 CLAUDE_TEMPLATE.md 模板
-  - 9轮渐进式问答
-  - 支持多种技术栈
   - 自动备份机制
 - 📦 插件市场基础架构
   - 标准化插件目录结构
   - 插件安装文档
   - 开发指南
 - 📚 完整的项目文档
-  - README.md（插件市场介绍）
-  - plugins/README.md（插件列表）
-  - LICENSE（MIT 许可证）
-  - CHANGELOG.md（本文件）
 
 ### 文档
 - 详细的安装和使用指南
 - 插件开发最佳实践
 - 贡献指南
-- 常见问题解答
 
 ---
 
@@ -60,5 +78,6 @@
 
 ---
 
-[未发布]: https://github.com/ChamHerry/claude-code-third-party-plugins/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/ChamHerry/claude-code-third-party-plugins/releases/tag/v1.0.0
+[未发布]: https://github.com/THonour99/Claude-code-Embedded-plugins/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/THonour99/Claude-code-Embedded-plugins/compare/v1.0.0...v1.2.0
+[1.0.0]: https://github.com/THonour99/Claude-code-Embedded-plugins/releases/tag/v1.0.0

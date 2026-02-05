@@ -1,16 +1,16 @@
 # 贡献指南
 
-感谢您对 Claude Code 插件市场的关注！我们欢迎所有形式的贡献。
+感谢您对 Claude Code 嵌入式开发插件集的关注！我们欢迎所有形式的贡献。
 
 ## 🤝 如何贡献
 
 ### 贡献方式
 
 - 🐛 **报告 Bug**：发现问题请提交 Issue
-- 💡 **功能建议**：提出新插件想法或改进建议
+- 💡 **功能建议**：提出新的嵌入式插件想法或改进建议
 - 📝 **文档改进**：完善文档和示例
 - 🔧 **代码贡献**：开发新插件或改进现有插件
-- ⭐ **Star 和分享**：帮助更多人发现这个项目
+- ⭐ **Star 和分享**：帮助更多嵌入式开发者发现这个项目
 
 ## 📋 贡献流程
 
@@ -21,8 +21,8 @@
 ### 2. 克隆仓库
 
 ```bash
-git clone https://github.com/ChamHerry/claude-code-third-party-plugins.git
-cd claude-code-third-party-plugins
+git clone https://github.com/THonour99/Claude-code-Embedded-plugins.git
+cd Claude-code-Embedded-plugins
 ```
 
 ### 3. 创建分支
@@ -112,12 +112,14 @@ git push origin plugin/your-plugin-name
 - **插件名称**: your-plugin-name
 - **功能描述**: 简要说明插件功能
 - **命令列表**: /command1, /command2
+- **支持的平台/芯片**: STM32Hxxx, STM32Fxxx 等
 
 ## 测试情况
 - [ ] 已在本地测试
 - [ ] 所有命令正常工作
 - [ ] 文档已更新
 - [ ] 通过代码审查
+- [ ] 在嵌入式项目中验证
 
 ## 截图/示例
 如有必要，添加截图或使用示例...
@@ -154,7 +156,7 @@ your-plugin-name/
     "name": "Your Name",
     "email": "your.email@example.com"
   },
-  "keywords": ["keyword1", "keyword2"],
+  "keywords": ["embedded", "STM32", "keyword"],
   "license": "MIT"
 }
 ```
@@ -192,6 +194,14 @@ description: 命令的简要描述
 - 异常处理完善
 - 用户体验友好
 
+### 嵌入式插件规范
+
+- ✅ 支持常见嵌入式 IDE（Keil MDK / IAR / CMake）
+- ✅ 考虑跨平台兼容性（Windows/macOS/Linux）
+- ✅ 优先使用项目实际数据，避免猜测
+- ✅ 遵循分层架构原则（Service/Driver/Device/BSP）
+- ✅ 处理嵌入式特有场景（中断安全、内存约束等）
+
 ### 命令规范
 
 - ✅ 清晰的执行步骤
@@ -218,7 +228,7 @@ description: 命令的简要描述
 - [ ] 边界情况处理正确
 - [ ] 错误提示清晰友好
 - [ ] 文件操作安全（备份、确认）
-- [ ] 在不同项目类型中测试
+- [ ] 在不同嵌入式项目类型中测试（Keil/IAR/CMake）
 
 ### 文档测试
 
@@ -237,28 +247,27 @@ description: 命令的简要描述
 
 ### 本项目参考
 
-- [project-init 插件](./plugins/project-init/) - 完整的插件实现示例
-- [插件开发方案文档](./docs/todo/) - 架构设计参考
+- [project-init 插件](./plugins/project-init/) - 完整的嵌入式插件实现示例
 
 ### 工具推荐
 
-- **测试**: 在独立项目中测试插件
+- **测试**: 在独立嵌入式项目中测试插件
 - **调试**: 使用 Claude Code 的日志功能
 - **验证**: 检查 plugin.json 格式
 
-## 🎯 插件想法
+## 🎯 嵌入式插件想法
 
-### 急需插件
+### 计划开发
 
-- **测试生成器**：自动生成单元测试
-- **API 文档生成**：从代码生成 API 文档
-- **依赖更新器**：自动检查和更新依赖
-- **数据库迁移**：数据库版本管理
-- **性能分析**：代码性能建议
+- **embedded-debug-assistant**：HardFault/崩溃/栈溢出调试助手
+- **embedded-perf-analyzer**：DMA优化/驱动性能/CPU占用分析
+- **hal-check**：HAL库使用检查工具
+- **rtos-analyze**：FreeRTOS/RT-Thread 任务分析
+- **memory-map**：内存布局可视化分析
 
 ### 提交想法
 
-有新插件想法？[创建 Issue →](https://github.com/ChamHerry/claude-code-third-party-plugins/issues/new)
+有新的嵌入式插件想法？[创建 Issue →](https://github.com/THonour99/Claude-code-Embedded-plugins/issues/new)
 
 ## ❓ 常见问题
 
@@ -272,7 +281,7 @@ A: 当然！你可以：
 
 ### Q: 插件需要多复杂？
 
-A: 从简单开始！一个解决实际问题的小插件比复杂但无用的大插件更有价值。
+A: 从简单开始！一个解决实际嵌入式开发问题的小插件比复杂但无用的大插件更有价值。
 
 ### Q: 如何获得帮助？
 
@@ -282,20 +291,16 @@ A:
 - 在 Discussions 提问
 - 提交 Issue
 
-### Q: PR 审核需要多久？
-
-A: 通常 3-7 天。我们会仔细审查以确保质量。
-
 ## 📄 许可证
 
 贡献的代码将采用 MIT 许可证。详见 [LICENSE](./LICENSE)。
 
 ## 📞 联系我们
 
-- **Issues**: [提交问题](https://github.com/ChamHerry/claude-code-third-party-plugins/issues)
-- **Discussions**: [参与讨论](https://github.com/ChamHerry/claude-code-third-party-plugins/discussions)
-- **Email**: wangxuecheng@example.com
+- **Issues**: [提交问题](https://github.com/THonour99/Claude-code-Embedded-plugins/issues)
+- **Discussions**: [参与讨论](https://github.com/THonour99/Claude-code-Embedded-plugins/discussions)
+- **Email**: TKai.study@gmail.com
 
 ---
 
-感谢你的贡献！每一个贡献都让这个项目变得更好。🎉
+感谢你的贡献！每一个贡献都让嵌入式开发者的体验变得更好。
