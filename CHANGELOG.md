@@ -14,6 +14,61 @@
 - rtos-analyze：FreeRTOS/RT-Thread 任务分析
 - memory-map：内存布局可视化分析
 
+## [2.0.0] - 2025-02
+
+### 新增
+- 🔄 **project-init 架构重构**
+  - 从"预设模板填充"模式改为"智能检测+动态生成"模式
+  - 完全基于项目检测结果生成 CLAUDE.md，无硬编码预设
+
+- 🎯 **零预设原则**
+  - 移除硬编码命名前缀（`ST_`/`EM_`/`RY_`）
+  - 移除预设目录结构（`platform/service/` 等）
+  - 移除预设接口模式（`Drv_XXX`/`Srv_XXX`）
+  - 移除预设内存区域（DTCM/AXI_SRAM）
+  - 移除预设配置文件名（`board_pins.h` 等）
+
+- 📊 **增量更新机制**
+  - 支持 `AUTO-GENERATED` 和 `USER-DEFINED` 区域标记
+  - 重新运行时保留用户自定义内容
+  - 支持旧格式迁移到新格式
+
+- ✅ **生成后验证**
+  - 验证所有引用的文件路径是否存在
+  - 验证 MCU 对应的 HAL 头文件是否存在
+  - 验证 Skills 引用是否有效
+  - 输出验证报告
+
+- 🛡️ **防幻觉机制强化**
+  - 新增嵌入式专用验证清单（寄存器/时钟/DMA/中断/GPIO）
+  - 细化每类操作的验证步骤
+
+- 🔍 **检测能力增强**
+  - 新增 STM32CubeIDE (.cproject) 支持
+  - 新增 ThreadX (Azure RTOS) 检测
+  - 新增中间件检测（LWIP/FatFS/USB/mbedTLS/FreeModbus/CAN）
+  - 新增链接脚本解析（内存区域、栈堆大小）
+  - 新增代码风格检测（命名模式提取）
+  - 增强 Keil MDK 解析（编译器版本 V5/V6 判断、多目标支持）
+  - 增强 FreeRTOS 配置提取（堆大小、优先级数量）
+
+- 🌐 **用户配置**
+  - 支持用户选择响应语言（中文/English/跟随输入）
+  - 移除硬编码的"中文响应"
+
+- 📁 **.gitignore 更新**
+  - 添加 CLAUDE.md 备份文件忽略规则
+
+### 变更
+- Skills 映射表改为动态生成，仅包含已安装的 skill
+- 任务文件路径不再硬编码，由用户决定
+- 移除对 `date` 命令的依赖，改善跨平台兼容性
+
+### 移除
+- 移除所有硬编码的预设值
+- 移除固定的层职责定义表（改为从代码检测）
+- 移除固定的接口设计模式代码示例（改为从代码提取）
+
 ## [1.2.0] - 2025-02
 
 ### 新增
@@ -78,6 +133,7 @@
 
 ---
 
-[未发布]: https://github.com/THonour99/Claude-code-Embedded-plugins/compare/v1.2.0...HEAD
+[未发布]: https://github.com/THonour99/Claude-code-Embedded-plugins/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/THonour99/Claude-code-Embedded-plugins/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/THonour99/Claude-code-Embedded-plugins/compare/v1.0.0...v1.2.0
 [1.0.0]: https://github.com/THonour99/Claude-code-Embedded-plugins/releases/tag/v1.0.0
