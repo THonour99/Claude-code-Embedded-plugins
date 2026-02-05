@@ -25,142 +25,7 @@ description: 智能检测嵌入式项目并动态生成 CLAUDE.md 规范文件�
 
 ---
 
-### 2. 项目智能分析
-
-**核心原则**: 完全基于检测结果，不做任何假设。所有检测失败的项目保留为"未检测到"，后续询问用户。
-
-#### 2.1 检测 IDE/构建系统
-
-按优先级依次检测：
-
-**Keil MDK (*.uvprojx / *.uvproj)**:
-```
-Glob: **/*.uvprojx, **/*.uvproj
-解析规则:
-├─ MCU型号: Grep `<Device>(.+?)</Device>`
-├─ 项目名: Grep `<OutputName>(.+?)</OutputName>`
-├─ 宏定义: Grep `<Define>(.+?)</Define>`
-├─ 编译器版本: 检查 `<uAC6>1</uAC6>` 判断 V6，否则 V5
-├─ Include路径: Grep `<IncludePath>(.+?)</IncludePath>`
-├─ 链接脚本: Grep `<ScatterFile>(.+?)</ScatterFile>`
-└─ 构建目标: Grep `<TargetName>(.+?)</TargetName>`（支持多目标）
-```
-
-**IAR (*.ewp)**:
-```
-Glob: **/*.ewp
-解析规则:
-├─ MCU型号: Grep `<OGChipSelectEditMenu>(.+?)</OGChipSelectEditMenu>`
-├─ 宏定义: 提取 `<state>` 标签中的 DEFINE 内容
-├─ Include路径: 提取 ICCARM 相关 state 内容
-└─ 链接脚本: Grep `<IlinkIcfFile>(.+?)</IlinkIcfFile>`
-```
-
-**STM32CubeMX (*.ioc)**:
-```
-Glob: **/*.ioc
-解析规则:
-├─ MCU型号: 搜索 `Mcu.UserName=` 或 `Mcu.Name=`
-├─ 项目名: 搜索 `ProjectManager.ProjectName=`
-├─ 外设配置: 搜索 `^[A-Z0-9]+\.` 开头的行
-├─ DMA配置: 搜索 `Dma.` 开头的行
-├─ 中断配置: 搜索 `NVIC.` 开头的行
-└─ 时钟配置: 搜索 `RCC.` 开头的行
-```
-
-**STM32CubeIDE (.cproject)**:
-```
-Glob: **/.cproject
-解析规则:
-├─ MCU型号: Grep `<option.*superClass.*mcu.*value="(.+?)"`
-├─ 宏定义: Grep `<listOptionValue.*value="(.+?)"`
-└─ 链接脚本: Grep `<option.*superClass.*linker.*script`
-```
-
-**CMake (CMakeLists.txt)**:
-```
-Glob: **/CMakeLists.txt
-解析规则:
-├─ 项目名: Grep `project\((.+?)\)`
-├─ MCU型号: Grep `MCPU|CHIP|MCU|DEVICE` 相关变量
-├─ 工具链: 检查 CMAKE_TOOLCHAIN_FILE 或 arm-none-eabi
-└─ 链接脚本: Grep `LINKER_SCRIPT|LD_SCRIPT` 或 `.ld` 文件引用
-```
-
-#### 2.2 检测 RTOS
-
-```
-FreeRTOS:
-├─ 头文件: Glob `**/FreeRTOS.h`
-├─ 配置: Glob `**/FreeRTOSConfig.h` → 提取 configTOTAL_HEAP_SIZE, configMAX_PRIORITIES
-└─ 代码: Grep `xTaskCreate|vTaskDelay|xQueueSend`
-
-RT-Thread:
-├─ 头文件: Glob `**/rtthread.h`
-├─ 配置: Glob `**/rtconfig.h`
-└─ 代码: Grep `rt_thread_create|rt_sem_take`
-
-ThreadX (Azure RTOS):
-├─ 头文件: Glob `**/tx_api.h`
-└─ 代码: Grep `tx_thread_create|tx_queue_send`
-
-裸机: 以上都未检测到
-```
-
-#### 2.3 检测中间件
-
-```
-LWIP:      Glob `**/lwip/**` 或 Grep `#include.*lwip`
-FatFS:     Glob `**/fatfs/**` 或 `**/ff.h`
-USB:       Glob `**/usb*/**` 或 Grep `USB_OTG|USBD_`
-mbedTLS:   Glob `**/mbedtls/**`
-FreeModbus: Grep `eMBInit|eMBPoll`
-CAN协议栈:  Grep `CAN_FilterConfig|HAL_CAN_`
-```
-
-#### 2.4 解析链接脚本
-
-```
-检测 .ld / .sct 文件:
-├─ 内存区域: Grep `MEMORY\s*\{` 后的内容，提取 ORIGIN 和 LENGTH
-├─ Flash大小/起始地址
-├─ RAM分区（DTCM/SRAM/AXI_SRAM 等，如果有）
-└─ 栈/堆大小: Grep `_Min_Heap_Size|_Min_Stack_Size|Stack_Size|Heap_Size`
-```
-
-#### 2.5 扫描代码风格
-
-```
-扫描 *.c 和 *.h 文件（采样前 10 个文件），提取：
-├─ 结构体命名: Grep `typedef struct` 后的命名模式（如 XX_TypeDef, ST_XX, xx_t）
-├─ 枚举命名: Grep `typedef enum` 后的命名模式（如 EM_XX, XX_Enum, xx_e）
-├─ 函数命名: 分析函数定义的命名风格（camelCase/snake_case/PascalCase）
-├─ 错误码类型: Grep `typedef.*enum.*\b(status|result|error|ret)\b`i
-├─ 文件组织: 分析目录结构，检测是否有分层
-└─ 层前缀: 如果有分层，检测各层文件的命名前缀（如 drv_/srv_/bsp_/app_）
-```
-
-#### 2.6 检测项目架构
-
-**不预设任何路径结构，从实际目录检测**：
-
-1. 列出顶层目录
-2. 识别常见架构模式：
-   - 分层架构: 检测 service/driver/device/bsp/hal 等目录
-   - HAL + App: 检测 Core/Drivers/Middlewares 等目录（CubeMX 风格）
-   - 扁平结构: src/inc 或无明显分层
-3. 生成实际的目录树描述
-
-#### 2.7 检测已安装 Skills
-
-1. 检查 `~/.claude/plugins/` 目录
-2. 或使用 Glob 搜索项目中 `.claude/plugins/` 目录
-3. 识别已安装的嵌入式相关 Skills
-4. 只在模板中包含已安装且相关的 skill
-
----
-
-### 3. 收集补充信息
+### 2. 收集补充信息
 
 使用 `AskUserQuestion` 询问：
 
@@ -177,9 +42,9 @@ CAN协议栈:  Grep `CAN_FilterConfig|HAL_CAN_`
 
 ---
 
-### 4. 生成 CLAUDE.md
+### 3. 生成 CLAUDE.md
 
-#### 4.1 通用层（固定内容）
+#### 3.1 通用层（固定内容）
 
 以下内容适用于所有嵌入式项目，保持固定：
 
@@ -309,7 +174,7 @@ CAN协议栈:  Grep `CAN_FilterConfig|HAL_CAN_`
 <!-- USER-DEFINED:END -->
 ```
 
-#### 4.2 动态层填充规则
+#### 3.2 动态层填充规则
 
 **项目概述**:
 ```markdown
@@ -426,7 +291,7 @@ hal/              ← HAL 抽象
 
 ---
 
-### 5. 生成后验证
+### 4. 生成后验证
 
 生成 CLAUDE.md 后执行验证：
 
@@ -451,7 +316,7 @@ hal/              ← HAL 抽象
 
 ---
 
-### 6. 输出结果
+### 5. 输出结果
 
 ```
 ✅ CLAUDE.md 生成完成！
